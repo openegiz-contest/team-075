@@ -11,4 +11,4 @@ datasources:
       organization: opentwins
       defaultBucket: default
     secureJsonData:
-      token: $INFLUXDB_TOKEN
+      token: ${INFLUXDB_TOKEN}
