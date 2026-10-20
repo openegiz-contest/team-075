@@ -1,3 +1,4 @@
+import os
 
 import json
 import random
@@ -7,7 +8,7 @@ from datetime import datetime
 import paho.mqtt.client as mqtt
 
 # EcoMine MQTT параметрлері
-BROKER = "localhost"
+BROKER = os.getenv("MQTT_HOST", "localhost")
 PORT = 1883
 TOPIC = "ecomine/telemetry"
 

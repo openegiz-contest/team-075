@@ -4,7 +4,7 @@ import urllib.request
 
 import paho.mqtt.client as mqtt
 
-INFLUX_URL = "http://localhost:8086"
+INFLUX_URL = os.getenv("INFLUX_URL", "http://localhost:8086")
 INFLUX_TOKEN = os.environ["INFLUXDB_TOKEN"]
 MQTT_TOPIC = "ecomine/telemetry"
 
@@ -73,7 +73,7 @@ client = mqtt.Client(
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("localhost", 1883, 60)
+client.connect(os.getenv("MQTT_HOST", "localhost"), 1883, 60)
 
 try:
     client.loop_forever()

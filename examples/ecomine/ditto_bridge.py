@@ -8,12 +8,12 @@ import base64
 import paho.mqtt.client as mqtt
 
 # EcoMine цифрлық егізінің мекенжайы
-DITTO_URL = "http://localhost:8080/api/2/things/ecomine:smart-mine"
+DITTO_URL = os.getenv("DITTO_URL", "http://localhost:8080/api/2/things/ecomine:smart-mine")
 
 USERNAME = "ditto"
 PASSWORD = os.environ["DITTO_PASSWORD"]
 
-MQTT_BROKER = "localhost"
+MQTT_BROKER = os.getenv("MQTT_HOST", "localhost")
 MQTT_TOPIC = "ecomine/telemetry"
 
 # Ditto авторизациясы

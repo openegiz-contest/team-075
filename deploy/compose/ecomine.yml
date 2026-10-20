@@ -1,0 +1,53 @@
+services:
+  ecomine-simulator:
+    build:
+      context: ../..
+      dockerfile: examples/ecomine/Dockerfile
+    command: python -u mqtt_simulator.py
+    environment:
+      MQTT_HOST: mosquitto
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+
+  ecomine-influx-writer:
+    build:
+      context: ../..
+      dockerfile: examples/ecomine/Dockerfile
+    command: python -u influx_writer.py
+    environment:
+      MQTT_HOST: mosquitto
+      INFLUX_URL: http://influxdb:8086
+      INFLUXDB_TOKEN: ${ECOMINE_INFLUX_TOKEN:?Set ECOMINE_INFLUX_TOKEN}
+    depends_on:
+      - mosquitto
+      - influxdb
+    restart: unless-stopped
+
+  ecomine-risk-writer:
+    build:
+      context: ../..
+      dockerfile: examples/ecomine/Dockerfile
+    command: python -u risk_writer.py
+    environment:
+      MQTT_HOST: mosquitto
+      INFLUX_URL: http://influxdb:8086
+      INFLUXDB_TOKEN: ${ECOMINE_INFLUX_TOKEN:?Set ECOMINE_INFLUX_TOKEN}
+    depends_on:
+      - mosquitto
+      - influxdb
+    restart: unless-stopped
+
+  ecomine-ditto-bridge:
+    build:
+      context: ../..
+      dockerfile: examples/ecomine/Dockerfile
+    command: python -u ditto_bridge.py
+    environment:
+      MQTT_HOST: mosquitto
+      DITTO_URL: http://ditto-nginx:80/api/2/things/ecomine:smart-mine
+      DITTO_PASSWORD: ${DITTO_PASSWORD:?Set DITTO_PASSWORD}
+    depends_on:
+      - mosquitto
+      - ditto-nginx
+    restart: unless-stopped

@@ -7,7 +7,7 @@ import urllib.error
 import paho.mqtt.client as mqtt
 
 # InfluxDB баптаулары
-INFLUX_URL = "http://localhost:8086"
+INFLUX_URL = os.getenv("INFLUX_URL", "http://localhost:8086")
 INFLUX_TOKEN = os.environ["INFLUXDB_TOKEN"]
 ORG = "opentwins"
 BUCKET = "default"
@@ -72,7 +72,7 @@ client.on_message = on_message
 
 print("EcoMine InfluxDB Writer started!")
 
-client.connect("localhost", 1883, 60)
+client.connect(os.getenv("MQTT_HOST", "localhost"), 1883, 60)
 
 try:
     client.loop_forever()
