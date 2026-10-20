@@ -1,63 +1,135 @@
-# SUBMISSION
+# EcoMine — Intelligent Green Mining Digital Twin
 
-<!-- Fill in every section. The AI Jury studies this file together with the code, the Build Report, the presentation and the Stand's interface. Accepted languages: English, Kazakh, Russian. These hint comments may be deleted. -->
+**Team:** 075
+**Platform:** OpenEgiz v1.0.4
+**Repository:** https://github.com/openegiz-contest/team-075
 
-## Concept
+## Project Overview
 
-<!-- Written by the Team before the code: your own choice, a few sentences per answer. Everything else in the Submission follows from it. -->
+EcoMine is an environmental monitoring and digital twin prototype for mining operations.
 
-**Enterprise:** <!-- Which mining enterprise, or which part of it, the twin represents. -->
+The system simulates mining truck telemetry, processes environmental measurements, stores time-series data, updates a digital twin, and visualizes operational indicators through Grafana.
 
-**Users:** <!-- Who uses the twin. -->
+The main goal is to demonstrate how mining enterprises can monitor environmental performance and identify potentially high-emission operating conditions.
 
-**Decision:** <!-- Which decision the twin helps them make. -->
+## Mine Model and Digital Twin
 
-**Why this choice:** <!-- Why this enterprise, these users and this decision. -->
+The prototype represents a simulated open-pit mining haulage operation with four trucks.
 
-**Real or fictional:** <!-- A real object: name it and give the sources of its numbers. A fictional one: which real objects it resembles and where its numbers come from. A real object with sourced numbers scores higher. -->
+Each truck generates telemetry containing:
+- Truck identifier and type
+- Ore transported, in tonnes
+- Energy consumption equivalent, in kWh
+- Water consumption, in cubic metres
+- CO2 emissions, in kilograms
+- Timestamp
 
-## Team
+The Eclipse Ditto digital twin is represented by the Thing ID:
 
-<!-- GitHub usernames of the Participants. Other personal data are not required: the repository becomes public after the Freeze (Rules, section 15). -->
+`ecomine:smart-mine`
 
-| GitHub |
-|---|
-|  |
+The twin is updated through the Ditto HTTP API.
 
-## Mine
+Implementation:
+- `examples/ecomine/mqtt_simulator.py`
+- `examples/ecomine/ditto_bridge.py`
 
-<!-- Which part of a mining enterprise the Submission represents (open pit, underground mine, processing plant…), which objects are twins in OpenEgiz, how they are related, and where they are defined in the code. -->
+## Architecture
+
+Data flow:
+
+Mining Truck Simulator
+→ MQTT / Mosquitto
+→ InfluxDB Writers
+→ InfluxDB
+→ Grafana Dashboard and Risk Alert
+
+In parallel:
+
+MQTT / Mosquitto
+→ Ditto Bridge
+→ Eclipse Ditto Digital Twin
+
+Technologies:
+- Python
+- Docker Compose
+- MQTT / Eclipse Mosquitto
+- InfluxDB
+- Eclipse Ditto
+- Grafana
 
 ## Modules and What-if Scenarios
 
-<!-- Modules: functions on top of the twin, from the Mine Map or your own. What-if Scenarios: changes of an operating condition that can be run on the Stand without changing the code (close a road, stop equipment…). Only what works on the Stand is taken into account. -->
-
 | Module or What-if Scenario | What it does | How to see it on the Stand | How to undo it (scenarios) |
 |---|---|---|---|
-|  |  |  |  |
+| Truck Telemetry Simulation | Generates synthetic telemetry for four mining trucks | MQTT telemetry and Grafana | Stop the simulator container |
+| Environmental Monitoring | Records CO2, water, energy and ore measurements | Grafana dashboard | Not applicable |
+| Environmental Risk Analysis | Classifies simulated CO2 measurements as NORMAL, WARNING or CRITICAL | Environmental Risk panel and service logs | Not applicable |
+| Digital Twin Synchronization | Updates the EcoMine Thing in Eclipse Ditto | Ditto HTTP API | Not applicable |
+| Critical Risk Alert | Detects critical risk values using a Grafana alert rule | Grafana Alerting | Not applicable |
 
-## What works and what does not
+No interactive what-if scenario has been verified. The current prototype demonstrates continuous telemetry processing and risk monitoring.
 
-<!-- What has been verified, what is unfinished, which bugs are known. -->
+## What Works and What Does Not
+
+Verified locally:
+- Four EcoMine Docker services start successfully.
+- MQTT telemetry is generated.
+- InfluxDB accepts telemetry and risk measurements (HTTP 204).
+- Eclipse Ditto accepts digital twin updates (HTTP 204).
+- Five Grafana panels display environmental and operational measurements.
+- A Grafana critical-risk alert has been observed in FIRING state.
+
+Not yet verified:
+- Fresh installation on a separate computer.
+- Automatic provisioning of the Grafana dashboard and alert on a clean deployment.
+- Interactive operational what-if scenarios.
 
 ## Data and Assumptions
 
-<!--
-- Synthetic and real data.
-- Sources of parameters: equipment data sheets, reference literature, industrial safety regulations, datasets.
-- Datasets: source, license, how they are provided (in the repository or downloaded per the README).
-Confidential data of organizations and personal data are prohibited.
--->
+All mining telemetry is synthetic.
 
-## Mine visualization
+The prototype does not use confidential enterprise data or personal data.
 
-<!-- Address on the Stand, dashboard or scene; what it shows. -->
+The risk classification is a demonstration rule based on CO2 mass per simulated telemetry record:
+
+- NORMAL: CO2 below 150 kg
+- WARNING: CO2 from 150 kg to below 200 kg
+- CRITICAL: CO2 of 200 kg or above
+
+These thresholds are prototype assumptions, not regulatory or industrial safety limits.
+
+The data is intended for software demonstration and does not represent validated measurements from a real mine.
+
+## Mine Visualization
+
+Grafana dashboard:
+
+`http://localhost:3000`
+
+The dashboard includes:
+1. CO2 Emissions
+2. Water Consumption
+3. Energy Consumption
+4. Ore Transportation
+5. Environmental Risk
+
+The Grafana alerting interface displays the critical environmental risk alert.
+
+These are local development addresses. External Stand URLs have not yet been verified.
 
 ## Limitations
 
+- The system currently uses simulated truck data.
+- No physical mining equipment is connected.
+- Risk thresholds are illustrative.
+- The digital twin represents aggregated mining telemetry rather than a fully modeled industrial mine.
+- Dashboard and alert provisioning require further automation.
+- No interactive what-if scenario is currently implemented.
+
 ## Presentation
 
-`presentation.pdf` in the repository root. Video (optional): <link>
+`presentation.pdf` will be added to the repository root.
 
 ---
 

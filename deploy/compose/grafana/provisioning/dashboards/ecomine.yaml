@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: EcoMine
+    orgId: 1
+    folder: EcoMine
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards/ecomine
